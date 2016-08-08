@@ -7,7 +7,7 @@
 from setuptools import setup
 
 setup(name='xyz2rast',
-      version='0.1.0',
+      version='0.1.1',
       description='Gridding algorithm for time series XYZ data',
       url='https://github.com/tashley/xyz2rast.git',
       author='Thomas Ashley',

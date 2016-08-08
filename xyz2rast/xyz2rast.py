@@ -183,20 +183,23 @@ class mbdata:
     def grid_data(self, dx, dy, nr):
         """ batch processing function """
         incomplete = self.data.gridded[self.data.gridded == False].index.tolist()
-        print("{0}/{1} complete.  Resuming.".format(incomplete[0], self.nt))
-        for i in incomplete:
-            streamwise_xyz = rotateXY(np.load(self.data.ix[i,'xyzPaths']),
-                                      self.flowAz)
-            rast = grid_single(streamwise_xyz, nr,
-                               self.xmin, self.xmax, dx,
-                               self.ymin, self.ymax, dy)
-            self.data.set_value(i, 'raster', rast)
-            self.data.ix[i, 'gridded'] = True
-            fname = dt.datetime.strftime(self.data.ix[i,'time'], self.rastFmt)
-            outfile = '{0}/{1}'.format(self.rastDir, fname)
-            np.save(outfile,rast)
-            print("({0}/{1}) completed at {2})".format(i+1, self.nt, dt.datetime.now()))
-
+        
+        try:
+            print("{0}/{1} complete.  Resuming.".format(incomplete[0], self.nt))
+            for i in incomplete:
+                streamwise_xyz = rotateXY(np.load(self.data.ix[i,'xyzPaths']),
+                                          self.flowAz)
+                rast = grid_single(streamwise_xyz, nr,
+                                   self.xmin, self.xmax, dx,
+                                   self.ymin, self.ymax, dy)
+                self.data.set_value(i, 'raster', rast)
+                self.data.ix[i, 'gridded'] = True
+                fname = dt.datetime.strftime(self.data.ix[i,'time'], self.rastFmt)
+                outfile = '{0}/{1}'.format(self.rastDir, fname)
+                np.save(outfile,rast)
+                print("({0}/{1}) completed at {2})".format(i+1, self.nt, dt.datetime.now()))
+        except:
+            print("Gridding Complete")
 
         Z = np.empty((self.nt, self.data.raster[0].shape[0],
                       self.data.raster[0].shape[1]), 'float')
